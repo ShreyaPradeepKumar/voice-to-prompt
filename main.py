@@ -1,19 +1,21 @@
-from googletrans import Translator
 import speech_recognition as sr
+from deep_translator import GoogleTranslator
 
-translator = Translator()
-recognizer = sr.Recognizer()
+r = sr.Recognizer()
 
 with sr.Microphone() as source:
-    print("Speak...")
-    audio = recognizer.listen(source)
+    print("Speak (you have 8 seconds)...")
+    r.adjust_for_ambient_noise(source, duration=1)
+    audio = r.record(source, duration=8)  # ⬅️ fixed recording
 
 try:
-    text = recognizer.recognize_google(audio)
+    text = r.recognize_google(audio)
     print("Original:", text)
 
-    translated = translator.translate(text, dest='en')
-    print("English:", translated.text)
+    translated = GoogleTranslator(source="auto", target="en").translate(text)
+    print("Translated:", translated)
 
-except Exception as e:
+except sr.UnknownValueError:
+    print("Error: Could not understand audio")
+except sr.RequestError as e:
     print("Error:", e)

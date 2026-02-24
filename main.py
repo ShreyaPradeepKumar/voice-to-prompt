@@ -4,10 +4,15 @@ from deep_translator import GoogleTranslator
 r = sr.Recognizer()
 
 with sr.Microphone() as source:
-    print("Speak (you have 8 seconds)...")
-    r.adjust_for_ambient_noise(source, duration=1)
-    audio = r.record(source, duration=8)  # ⬅️ fixed recording
+    print("Adjusting for noise...")
+    recognizer.adjust_for_ambient_noise(source)
 
+    print("Speak now...")
+    audio = recognizer.listen(
+        source,
+        timeout=None,
+        phrase_time_limit=None
+    )
 try:
     text = r.recognize_google(audio)
     print("Original:", text)
